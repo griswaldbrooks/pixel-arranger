@@ -27,7 +27,22 @@ jobs:
       run: cargo doc --no-deps
 
     - name: Create redirect page
-      run: echo '<meta http-equiv=\"refresh\" content=\"0; url=pixel_arranger\">' > target/doc/index.html
+      run: |
+        cat <<EOT > target/doc/index.html
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <base href="pixel_arranger/" target="_self">
+            <meta http-equiv="refresh" content="0; url=pixel_arranger/index.html" />
+          </head>
+          <body>
+            <p>
+              If you're not redirected automatically, click
+              <a href="pixel_arranger/index.html">here</a>.
+            </p>
+          </body>
+        </html>
+        EOT
 
     - name: Generate documentation artifacts
       uses: actions/upload-pages-artifact@v1
