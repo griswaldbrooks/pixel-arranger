@@ -40,7 +40,6 @@ jobs:
           mdbook build
           mkdir -p book/rustdoc
           cp -r ../target/doc/* book/rustdoc/
-          ls -al
 
       - name: Generate documentation artifacts
         uses: actions/upload-pages-artifact@v1

@@ -1,5 +1,7 @@
 # pixel arranger
 
+![](book/src/assets/pixel-arranger-icon.png)
+
 pixel arranger is a simple multi image viewer built using Rust and Egui. It allows users to view, arrange, zoom, and manage multiple images on a canvas.
 
 ## Features
