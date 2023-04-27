@@ -1,0 +1,6 @@
+[book]
+authors = ["Griswald Brooks"]
+language = "en"
+multilingual = false
+src = "src"
+title = "pixel-arranger"

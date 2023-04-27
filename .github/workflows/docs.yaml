@@ -12,43 +12,38 @@ jobs:
     permissions:
       pages: write
       id-token: write
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: default
+          override: true
+          toolchain: nightly
 
-    - name: Install Rust
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable
-        override: true
+      - name: Install `mdbook`
+        uses: peaceiris/actions-mdbook@v1
+        with:
+          mdbook-version: 'latest'
 
-    - name: Generate documentation
-      run: cargo doc --no-deps
+      - name: Clone repo
+        uses: actions/checkout@v3
 
-    - name: Create redirect page
-      run: |
-        cat <<EOT > target/doc/index.html
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <base href="pixel_arranger/" target="_self">
-            <meta http-equiv="refresh" content="0; url=pixel_arranger/index.html" />
-          </head>
-          <body>
-            <p>
-              If you're not redirected automatically, click
-              <a href="pixel_arranger/index.html">here</a>.
-            </p>
-          </body>
-        </html>
-        EOT
+      - name: Build docs
+        uses: actions-rs/cargo@v1
+        with:
+          command: doc
+          args: --all-features
 
-    - name: Generate documentation artifacts
-      uses: actions/upload-pages-artifact@v1
-      with:
-        path: target/doc/pixel_arranger
+      - name: Build book and documentation
+        run: |
+          cd book
+          mdbook build
+          mkdir -p book/rustdoc
+          cp -r ../target/doc/* book/rustdoc/
+          ls -al
 
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v2
+      - name: Deploy to Github Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./book/book
